@@ -20,6 +20,11 @@ from telegram.ext import (
 # ── конфиг ──────────────────────────────────────────────────
 BOT_TOKEN      = os.environ["BOT_TOKEN"]
 ANTHROPIC_KEY  = os.environ["ANTHROPIC_API_KEY"]
+# Telegram ID всех участников — видят планы друг друга
+FAMILY = {
+    46474536   # твой ID (посмотри в /start)
+       # ID Лизы
+}
 DB_PATH        = "trips.db"
 
 logging.basicConfig(level=logging.INFO)
@@ -456,8 +461,8 @@ async def cmd_saved(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         rows = con.execute(
             "SELECT s.category, s.item, t.city "
             "FROM saved s JOIN trips t ON s.trip_id=t.id "
-            "WHERE s.user_id=? ORDER BY t.city, s.category",
-            (user_id,)
+            f"WHERE user_id IN ({','.join('?'*len(FAMILY))}) ORDER BY id DESC LIMIT 10",
+list(FAMILY)
         ).fetchall()
 
     if not rows:
@@ -503,8 +508,8 @@ async def cmd_trips(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     with db() as con:
         rows = con.execute(
             "SELECT id, city, dates, budget, vibe, created_at FROM trips "
-            "WHERE user_id=? ORDER BY id DESC LIMIT 10",
-            (user_id,)
+            f"WHERE user_id IN ({','.join('?'*len(FAMILY))}) ORDER BY id DESC LIMIT 10",
+list(FAMILY)
         ).fetchall()
 
     if not rows:
