@@ -22,8 +22,8 @@ BOT_TOKEN      = os.environ["BOT_TOKEN"]
 ANTHROPIC_KEY  = os.environ["ANTHROPIC_API_KEY"]
 # Telegram ID всех участников — видят планы друг друга
 FAMILY = {
-    46474536   # твой ID (посмотри в /start)
-       # ID Лизы
+    46474536,   # твой ID (посмотри в /start)
+    455674930,   # ID Лизы
 }
 DB_PATH        = "trips.db"
 
